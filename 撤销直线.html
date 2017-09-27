@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #cvs{box-shadow: 0 0 20px rgba(0,0,0,0.5);position: absolute;margin: auto;top:0;left:0;bottom:0;right:0;}
+        button{position: absolute;bottom:300px;right:300px;z-index:2;height:30px;width:100px;cursor: pointer;}
+    </style>
+    <script src="../js/jquery-2.2.4.js"></script>
+    <script>
+        window.onload=function(){
+            var canvs=document.getElementById("cvs");
+            var cvs=canvs.getContext("2d");
+            var oBtn=document.getElementsByTagName("button")[0];
+            canvs.width=document.documentElement.clientWidth;
+            canvs.height=document.documentElement.clientHeight;
+            var lastX;
+            var lastY;
+            var arr=[];
+            cvs.lineCap="round";
+            cvs.lineJoin="round";
+            window.oncontextmenu=function(ev){
+                ev.preventDefault();
+            };
+            canvs.onmouseup=function(ev){
+                if(ev.button==0){
+                    paint(ev);
+                }else if(ev.button==2){
+                    eraser(ev);
+                }
+            };
+            function eraser(ev){
+                lastX=undefined;
+                lastY=undefined;
+                var obj={
+                    x1:undefined,
+                    y1:undefined,
+                    x2:undefined,
+                    y2:undefined
+                };
+                arr.push(obj);
+            }
+            function paint(ev){
+                if(lastX==undefined){
+                    lastX=ev.offsetX;
+                    lastY=ev.offsetY;
+                }
+                cvs.beginPath();
+                cvs.lineWidth=10;
+                cvs.moveTo(lastX,lastY);
+                cvs.lineTo(ev.offsetX,ev.offsetY);
+                cvs.strokeStyle="#111";
+                cvs.stroke();
+                cvs.closePath();
+                var obj={
+                    x1:lastX,
+                    y1:lastY,
+                    x2:ev.offsetX,
+                    y2:ev.offsetY
+                };
+                lastX=ev.offsetX;
+                lastY=ev.offsetY;
+                arr.push(obj);
+            }
+            oBtn.onclick=function(){
+                cvs.clearRect(0,0,canvs.width,canvs.height);
+                lastX=undefined;
+                lastY=undefined;
+                arr.splice(arr.length-1,1);
+                cvs.beginPath();
+                cvs.lineWidth = 10;
+                for (var i = 0; i < arr.length; i++) {
+                    cvs.closePath();
+                    cvs.beginPath();
+                    cvs.moveTo(arr[i].x1, arr[i].y1);
+                    cvs.lineTo(arr[i].x2, arr[i].y2);
+                    cvs.strokeStyle = "#111";
+                    cvs.stroke();
+                }
+                cvs.closePath();
+            }
+        };
+    </script>
+</head>
+<body>
+<canvas id="cvs"></canvas>
+<button type="button">Undo</button>
+</body>
+</html>

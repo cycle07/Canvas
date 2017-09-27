@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+    #cvs{box-shadow: 0 0 20px rgba(0,0,0,0.5);position: absolute;margin: auto;top:0;left:0;bottom:0;right:0;}
+</style>
+<script src="../js/jquery-2.2.4.js"></script>
+<script>
+    window.onload=function(){
+        var canvs=document.getElementById("cvs");
+        var cvs=canvs.getContext("2d");
+        function init(){
+            for(var j=0;j<60;j++){
+                cvs.beginPath();
+                cvs.lineWidth=16;
+                cvs.arc(360,360,200,j*2*Math.PI/60-0.005,j*2*Math.PI/60+0.005);
+                cvs.lineCap="butt";
+                cvs.lineJoin="miter";
+                cvs.strokeStyle="deepskyblue";
+                cvs.stroke();
+                cvs.closePath();
+            }
+            for(var i=0;i<12;i++){
+                cvs.beginPath();
+                cvs.lineWidth=32;
+                cvs.arc(360,360,200,i*2*Math.PI/12-0.05,i*2*Math.PI/12+0.05);
+                cvs.lineCap="butt";
+                cvs.lineJoin="miter";
+                cvs.strokeStyle="tomato";
+                cvs.stroke();
+                cvs.closePath();
+            }
+        }
+        init();
+        setInterval(function(){
+            var timing=new Date();
+            var hour=timing.getHours();
+            var mins=timing.getMinutes();
+            var sec=timing.getSeconds();
+            run(hour,mins,sec);
+        },1000);
+        function run(hour,mins,sec){
+            cvs.clearRect(0,0,720,720);
+            init();
+            var secc=sec/60*2*Math.PI-Math.PI/2;
+            var minc=(mins+sec/60)/60*2*Math.PI-Math.PI/2;
+            var hourc;
+            if(hour>=12){
+                hourc=(hour%12+mins/60+sec/3600)/12*2*Math.PI-Math.PI/2+(minc-Math.PI/2)/60;
+            }else{
+                hourc=(hour+mins/60+sec/3600)/12*2*Math.PI-Math.PI/2+(minc-Math.PI/2)/60;
+            }
+            cvs.beginPath();
+            cvs.lineWidth=5;
+            cvs.moveTo(360,360);
+            cvs.lineTo(360+200*Math.cos(secc),360+200*Math.sin(secc));
+            cvs.lineCap="square";
+            cvs.lineJoin="miter";
+            cvs.strokeStyle="#111";
+            cvs.stroke();
+            cvs.closePath();
+            cvs.beginPath();
+            cvs.lineWidth=10;
+            cvs.moveTo(360,360);
+            cvs.lineTo(360+150*Math.cos(minc),360+150*Math.sin(minc));
+            cvs.lineCap="square";
+            cvs.lineJoin="miter";
+            cvs.strokeStyle="#111";
+            cvs.stroke();
+            cvs.closePath();
+            cvs.beginPath();
+            cvs.lineWidth=15;
+            cvs.moveTo(360,360);
+            cvs.lineTo(360+100*Math.cos(hourc),360+100*Math.sin(hourc));
+            cvs.lineCap="square";
+            cvs.lineJoin="miter";
+            cvs.strokeStyle="#111";
+            cvs.stroke();
+            cvs.closePath();
+        }
+
+    };
+</script>
+</head>
+<body>
+<canvas id="cvs" width="720px" height="720px"></canvas>
+</body>
+</html>

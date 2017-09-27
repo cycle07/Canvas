@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #cvs{box-shadow: 0 0 20px rgba(0,0,0,0.5);position: absolute;margin: auto;top:0;left:0;bottom:0;right:0;}
+    </style>
+    <script src="../js/jquery-2.2.4.js"></script>
+    <script>
+        window.onload=function(){
+            var canvs=document.getElementById("cvs");
+            var cvs=canvs.getContext("2d");
+            function Round(x,y,r,c,xadd,yadd){   //构造函数生成圆
+                this.x=x;
+                this.y=y;
+                this.r=r;
+                this.c=c;
+                this.xadd=xadd;
+                this.yadd=yadd;
+                var statsx=true;
+                var statsy=true;
+                this.draw=function(){
+                    cvs.beginPath();
+                    cvs.arc(this.x,this.y,this.r,0,2*Math.PI);
+                    cvs.fillStyle=this.c;
+                    cvs.fill();
+                    cvs.closePath();
+                    if(statsx){
+                        this.x+=this.xadd;
+                        if(this.x>=canvs.width-this.r||this.x<=this.r){
+                            statsx=false;
+                        }
+                    }else{
+                        this.x-=this.xadd;
+                        if(this.x>=canvs.width-this.r||this.x<=this.r){
+                            statsx=true;
+                        }
+                    }
+                    if(statsy){
+                        this.y+=this.yadd;
+                        if(this.y>=canvs.height-this.r||this.y<=this.r){
+                            statsy=false;
+                        }
+                    }else{
+                        this.y-=this.yadd;
+                        if(this.y>=canvs.height-this.r||this.y<=this.r){
+                            statsy=true;
+                        }
+                    }
+                }
+            }
+            var arrc=[];
+            function init(){  //初始化随机圆
+                var c1=parseInt(Math.random()*256);
+                var c2=parseInt(Math.random()*256);
+                var c3=parseInt(Math.random()*256);
+                var c4=Math.random()*0.8;
+                var l=Math.random()*(canvs.width-160)+80;
+                var t=Math.random()*(canvs.height-160)+80;
+                var re=Math.random()*60+20;
+                var kk=Math.random()*5-2;
+                var bb=Math.random()*5-2;
+                arrc.push(new Round(l,t,re,"rgba("+c1+","+c2+","+c3+","+c4+")",kk,bb));
+            }
+            setInterval(function(){  //每30毫秒刷新一次绘制
+                cvs.clearRect(0,0,canvs.width,canvs.height);   //清除画板内容
+                init();
+//                arrc.push(new Round(700,500,30,"tomato",1,-1));
+//                arrc[0].draw();
+                for(var i=0;i<100;i++){
+                    init();
+                    arrc[i].draw();
+                }
+            },10);
+        };
+    </script>
+</head>
+<body>
+<canvas id="cvs" width="900px" height="900px"></canvas>
+</body>
+</html>
